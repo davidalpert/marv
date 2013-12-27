@@ -2,18 +2,34 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:m="clr-namespace:Marv.Xaml"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="24"></RowDefinition>
-        </Grid.RowDefinitions>
+        Title="Marv - a File Watching Markdown Viewer for Windows" Height="350" Width="525">
+    
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding FileOpenCommand}" Gesture="Ctrl+O" />
+    </Window.InputBindings>
+    
+    <DockPanel LastChildFill="True">
         
-        <WebBrowser Grid.Row="0" m:BrowserBehavior.Html="{Binding Html}" />
-        <StatusBar Grid.Row="1">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Command="{Binding FileOpenCommand}" InputGestureText="Ctrl+O"/>
+                <Separator/>
+                <MenuItem Header="_Quit" Command="{Binding ExitCommand}" InputGestureText="Alt+F4"
+                                          CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+            </MenuItem>
+        </Menu>
+        
+        <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem HorizontalAlignment="Left" Content="{Binding LastWriteTime}"/>
             <Separator/>
             <StatusBarItem HorizontalAlignment="Stretch" Content="{Binding PathToSource}"/>
         </StatusBar>
-    </Grid>
+        
+        <WebBrowser Grid.Row="1" m:BrowserBehavior.Html="{Binding Html}" >
+            <WebBrowser.InputBindings>
+                <KeyBinding Command="{Binding FileOpenCommand}" Gesture="Ctrl+O" />
+            </WebBrowser.InputBindings>
+        </WebBrowser>
+    </DockPanel>
+    
 </Window>

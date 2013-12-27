@@ -1,9 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
 using MarkdownSharp;
+using Marv.Xaml;
 using PropertyChanged;
 
 namespace Marv
@@ -19,7 +23,7 @@ namespace Marv
             get { return _pathToSource; }
             set
             {
-                _pathToSource = value;
+                _pathToSource = Path.GetFullPath(value);
                 PathChanged();
             }
         }
@@ -27,19 +31,39 @@ namespace Marv
         private void PathChanged()
         {
             SourceUpdated();
-
         }
+
+        public ICommand FileOpenCommand { get; set; }
+        public ICommand ExitCommand { get; set; }
 
         private string _pathToSource;
         private IFileSystem _fileSystem;
-        private FileInfoBase _file;
         private Markdown _markdownConverter;
-        private DispatcherTimer dispatcherTimer;
+        private DispatcherTimer _dispatcherTimer;
 
-        public MainWindowViewModel()
-            : this(new FileSystem())
+        public MainWindowViewModel() : this(new FileSystem())
         {
-            PathToSource = @".\sample.md"; // for testing
+            PathToSource = @".\welcome.md"; 
+        }
+
+        public void OpenFile()
+        {
+            // Configure open file dialog box 
+            var dlg = new Microsoft.Win32.OpenFileDialog
+                {
+                    InitialDirectory = string.IsNullOrWhiteSpace(PathToSource) ? Environment.GetFolderPath(Environment.SpecialFolder.Desktop) : Path.GetDirectoryName(PathToSource),
+                    FileName = string.IsNullOrWhiteSpace(PathToSource) ? "document" : Path.GetFileName(PathToSource),
+                    DefaultExt = ".md",
+                    Filter = "Markdown documents (.md)|*.md"
+                };
+
+            // Show open file dialog box 
+            var result = dlg.ShowDialog();
+            if (result == true)
+            {
+                // Open document 
+                PathToSource = dlg.FileName;
+            }
         }
 
         public MainWindowViewModel(IFileSystem fileSystem)
@@ -47,14 +71,26 @@ namespace Marv
             _fileSystem = fileSystem;
             _markdownConverter = new Markdown();
 
+            FileOpenCommand = new DelegateCommand(OpenFile);
+            ExitCommand = new RelayCommand(CloseWindow);
+
             InitializeFileWatcher();
+        }
+
+        private void CloseWindow(object obj)
+        {
+            var window = obj as Window;
+            if (window != null)
+            {
+                window.Close();
+            }
         }
 
         private void InitializeFileWatcher()
         {
-            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += OnDispatcherTimerOnTick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Tick += OnDispatcherTimerOnTick;
+            _dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
         }
 
         private void OnDispatcherTimerOnTick(object sender, EventArgs args)
@@ -69,9 +105,9 @@ namespace Marv
 
         private void SourceUpdated()
         {
-            if (dispatcherTimer.IsEnabled)
+            if (_dispatcherTimer.IsEnabled)
             {
-                dispatcherTimer.Stop();
+                _dispatcherTimer.Stop();
             }
 
             LastWriteTime = GetLastWriteTime();
@@ -80,7 +116,7 @@ namespace Marv
             var html = _markdownConverter.Transform(md);
 
             Html = html;
-            dispatcherTimer.Start();
+            _dispatcherTimer.Start();
         }
 
         private DateTime GetLastWriteTime()
