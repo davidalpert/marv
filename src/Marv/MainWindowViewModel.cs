@@ -2,6 +2,7 @@
 using System.IO.Abstractions;
 using System.Linq;
 using System.Collections.Generic;
+using System.Windows.Threading;
 using MarkdownSharp;
 using PropertyChanged;
 
@@ -19,36 +20,74 @@ namespace Marv
             set
             {
                 _pathToSource = value;
-                PathChangedTo(_pathToSource);
+                PathChanged();
             }
+        }
+
+        private void PathChanged()
+        {
+            SourceUpdated();
+
         }
 
         private string _pathToSource;
         private IFileSystem _fileSystem;
         private FileInfoBase _file;
         private Markdown _markdownConverter;
+        private DispatcherTimer dispatcherTimer;
 
-        public MainWindowViewModel() : this(new FileSystem())
+        public MainWindowViewModel()
+            : this(new FileSystem())
         {
+            PathToSource = @".\sample.md"; // for testing
         }
 
         public MainWindowViewModel(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
-
-            PathToSource = @".\sample.md";
-        }
-
-        private void PathChangedTo(string pathToSource)
-        {
-            _file = _fileSystem.FileInfo.FromFileName(PathToSource);
             _markdownConverter = new Markdown();
 
-            LastWriteTime = _file.LastWriteTimeUtc;
+            InitializeFileWatcher();
+        }
+
+        private void InitializeFileWatcher()
+        {
+            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += OnDispatcherTimerOnTick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+        }
+
+        private void OnDispatcherTimerOnTick(object sender, EventArgs args)
+        {
+            var lastWriteTime = GetLastWriteTime();
+
+            if (lastWriteTime != LastWriteTime)
+            {
+                SourceUpdated();
+            }
+        }
+
+        private void SourceUpdated()
+        {
+            if (dispatcherTimer.IsEnabled)
+            {
+                dispatcherTimer.Stop();
+            }
+
+            LastWriteTime = GetLastWriteTime();
 
             var md = _fileSystem.File.ReadAllText(PathToSource);
             var html = _markdownConverter.Transform(md);
+
             Html = html;
+            dispatcherTimer.Start();
+        }
+
+        private DateTime GetLastWriteTime()
+        {
+            var file = _fileSystem.FileInfo.FromFileName(PathToSource);
+            var lastWriteTime = file.LastWriteTimeUtc;
+            return lastWriteTime;
         }
     }
 }
