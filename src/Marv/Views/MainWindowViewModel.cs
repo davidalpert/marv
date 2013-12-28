@@ -44,10 +44,6 @@ namespace Marv
         private DispatcherTimer _dispatcherTimer;
         private IConfigurableWindow _window;
 
-        public MainWindowViewModel(IConfigurableWindow window) : this(window, new FileSystem())
-        {
-        }
-
         public MainWindowViewModel(IConfigurableWindow window, IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;

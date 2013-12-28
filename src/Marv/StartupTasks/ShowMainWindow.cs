@@ -1,3 +1,4 @@
+using System.IO.Abstractions;
 using Bootstrap.Extensions.StartupTasks;
 
 namespace Marv.StartupTasks
@@ -7,8 +8,7 @@ namespace Marv.StartupTasks
         public void Run()
         {
             var window = new MainWindow();
-            var controller = new MainWindowViewModel(window);
-            window.DataContext = controller;
+            window.DataContext = new MainWindowViewModel(window, new FileSystem());
             window.Show();
         }
 
