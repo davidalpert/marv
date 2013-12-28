@@ -42,13 +42,13 @@ namespace Marv
         private IFileSystem _fileSystem;
         private Markdown _markdownConverter;
         private DispatcherTimer _dispatcherTimer;
-        private IMainWindow _window;
+        private IConfigurableWindow _window;
 
-        public MainWindowViewModel(IMainWindow window) : this(window, new FileSystem())
+        public MainWindowViewModel(IConfigurableWindow window) : this(window, new FileSystem())
         {
         }
 
-        public MainWindowViewModel(IMainWindow window, IFileSystem fileSystem)
+        public MainWindowViewModel(IConfigurableWindow window, IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
             _markdownConverter = new Markdown();
