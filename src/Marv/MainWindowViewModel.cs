@@ -7,14 +7,16 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using MarkdownSharp;
+using Marv.Properties;
 using Marv.Xaml;
 using PropertyChanged;
 
 namespace Marv
 {
     [ImplementPropertyChanged]
-    public class MainWindowViewModel
+    public class MainWindowViewModel 
     {
+        public Size WindowSize { get; set; }
         public string Html { get; set; }
         public DateTime LastWriteTime { get; set; }
 
@@ -40,10 +42,26 @@ namespace Marv
         private IFileSystem _fileSystem;
         private Markdown _markdownConverter;
         private DispatcherTimer _dispatcherTimer;
+        private IMainWindow _window;
 
-        public MainWindowViewModel() : this(new FileSystem())
+        public MainWindowViewModel(IMainWindow window) : this(window, new FileSystem())
         {
-            PathToSource = @".\welcome.md"; 
+        }
+
+        public MainWindowViewModel(IMainWindow window, IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+            _markdownConverter = new Markdown();
+            _window = window;
+
+            FileOpenCommand = new DelegateCommand(OpenFile);
+            ExitCommand = new RelayCommand(CloseWindow);
+
+            InitializeFileWatcher();
+
+            ApplySettings(Settings.Default);
+            _window.SizeChanged += (sender, args) => WindowSize = args.NewSize;
+            _window.Closing += (sender, args) => SaveSettings();
         }
 
         public void OpenFile()
@@ -64,17 +82,6 @@ namespace Marv
                 // Open document 
                 PathToSource = dlg.FileName;
             }
-        }
-
-        public MainWindowViewModel(IFileSystem fileSystem)
-        {
-            _fileSystem = fileSystem;
-            _markdownConverter = new Markdown();
-
-            FileOpenCommand = new DelegateCommand(OpenFile);
-            ExitCommand = new RelayCommand(CloseWindow);
-
-            InitializeFileWatcher();
         }
 
         private void CloseWindow(object obj)
@@ -124,6 +131,63 @@ namespace Marv
             var file = _fileSystem.FileInfo.FromFileName(PathToSource);
             var lastWriteTime = file.LastWriteTimeUtc;
             return lastWriteTime;
+        }
+
+        private void SaveSettings()
+        {
+            var settings = Settings.Default;
+            ReadSettings(settings);
+            settings.Save();
+        }
+
+        private void ReadSettings(Settings settings)
+        {
+            settings.WindowLocation = new Point(_window.Left, _window.Top);
+            settings.WindowSize = WindowSize;
+            settings.WindowState = _window.WindowState;
+            settings.PathToLastSource = PathToSource;
+        }
+
+        void ApplySettings(Settings settings)
+        {
+            Size sz = settings.WindowSize;
+            _window.Width = sz.Width;
+            _window.Height = sz.Height;
+
+            Point loc = settings.WindowLocation;
+
+            // If the user's machine had two monitors but now only
+            // has one, and the Window was previously on the other
+            // monitor, we need to move the Window into view.
+            bool outOfBounds =
+                loc.X < 0 || 
+                loc.Y < 0 ||
+                loc.X <= -sz.Width ||
+                loc.Y <= -sz.Height ||
+                SystemParameters.VirtualScreenWidth <= loc.X ||
+                SystemParameters.VirtualScreenHeight <= loc.Y;
+
+            if (outOfBounds)
+            {
+                _window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            }
+            else
+            {
+                _window.WindowStartupLocation = WindowStartupLocation.Manual;
+
+                _window.Left = loc.X;
+                _window.Top = loc.Y;
+
+                // We need to wait until the HWND window is initialized before
+                // setting the state, to ensure that this works correctly on
+                // a multi-monitor system.  Thanks to Andrew Smith for this fix.
+                _window.SourceInitialized += delegate
+                {
+                    _window.WindowState = settings.WindowState;
+                };
+            }
+
+            PathToSource = settings.PathToLastSource;
         }
     }
 }

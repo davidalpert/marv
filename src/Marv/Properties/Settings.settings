@@ -1,7 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Marv.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="WindowLocation" Type="System.Windows.Point" Scope="User">
+      <Value Profile="(Default)">-1,-1</Value>
+    </Setting>
+    <Setting Name="WindowSize" Type="System.Windows.Size" Scope="User">
+      <Value Profile="(Default)">350,525</Value>
+    </Setting>
+    <Setting Name="WindowState" Type="System.Windows.WindowState" Scope="User">
+      <Value Profile="(Default)">Normal</Value>
+    </Setting>
+    <Setting Name="PathToLastSource" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.\welcome.md</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
