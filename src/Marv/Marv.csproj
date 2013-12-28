@@ -37,12 +37,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bootstrapper">
+      <HintPath>..\packages\Bootstrapper.2.0.3.9\lib\Net40\Bootstrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Bootstrapper.StructureMap">
+      <HintPath>..\packages\Bootstrapper.StructureMap.2.0.3.9\lib\Net40\Bootstrapper.StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonServiceLocator.StructureMapAdapter.Unofficial">
+      <HintPath>..\packages\CommonServiceLocator.StructureMapAdapter.Unofficial.2.6.4.1\lib\Net40\CommonServiceLocator.StructureMapAdapter.Unofficial.dll</HintPath>
+    </Reference>
     <Reference Include="MarkdownSharp">
       <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\packages\CommonServiceLocator.StructureMapAdapter.Unofficial.2.6.4.1\lib\Net40\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="PropertyChanged">
       <HintPath>..\packages\PropertyChanged.Fody.1.43.1.0\Lib\NET35\PropertyChanged.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\packages\CommonServiceLocator.StructureMapAdapter.Unofficial.2.6.4.1\lib\Net40\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -69,6 +84,7 @@
     </ApplicationDefinition>
     <Compile Include="netfx\System\Guard.cs" />
     <Compile Include="netfx\System\Windows\Input\DelegateCommand.cs" />
+    <Compile Include="StartupTasks\ShowMainWindow.cs" />
     <Compile Include="Xaml\BrowserBehavior.cs" />
     <Compile Include="Xaml\IConfigurableWindow.cs" />
     <Compile Include="Xaml\RelayCommand.cs" />
@@ -112,6 +128,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="_MSBuild\NuGetPackageAndPublish.targets" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />

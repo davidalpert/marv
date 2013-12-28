@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Bootstrap;
+using Bootstrap.Extensions.StartupTasks;
+using Bootstrap.StructureMap;
 
 namespace Marv
 {
@@ -16,10 +16,14 @@ namespace Marv
         {
             base.OnStartup(e);
 
-            var window = new MainWindow();
-            var controller = new MainWindowViewModel(window);
-            window.DataContext = controller;
-            window.Show();
+            Bootstrapper.With
+                        .StartupTasks()
+                        /*
+                            .UsingThisExecutionOrder(s => s
+                                .First().TheRest()
+                                .Then<ShowMainWindow>())
+                         */
+                        .Start();
         }
     }
 }
