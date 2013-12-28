@@ -12,9 +12,6 @@ namespace Marv
         public MainWindow()
         {
             InitializeComponent();
-
-            var controller = new MainWindowViewModel(this);
-            this.DataContext = controller;
         }
     }
 }
