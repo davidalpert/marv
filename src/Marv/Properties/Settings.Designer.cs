@@ -82,5 +82,17 @@ namespace Marv.Properties {
                 this["ShowRawHtml"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PinToBottom {
+            get {
+                return ((bool)(this["PinToBottom"]));
+            }
+            set {
+                this["PinToBottom"] = value;
+            }
+        }
     }
 }

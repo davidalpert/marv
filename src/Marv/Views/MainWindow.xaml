@@ -27,6 +27,7 @@
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="Show _Raw HTML" IsCheckable="True" IsChecked="{Binding ShowRawHtml}"/>
+                <MenuItem Header="Pin to _Bottom" IsCheckable="True" IsChecked="{Binding PinToBottom}"/>
             </MenuItem>
         </Menu>
         
@@ -46,10 +47,13 @@
             <ScrollViewer
                 Grid.Row="0" Grid.Column="0" 
                 >
-                <TextBlock Text="{Binding RawHtml}" />
+                <TextBlock Text="{Binding Html}" />
             </ScrollViewer>
                 
-            <WebBrowser Grid.Row="0" Grid.Column="1" behaviors:BrowserBehavior.Html="{Binding Html}" >
+            <WebBrowser Grid.Row="0" Grid.Column="1"
+                        behaviors:BrowserBehavior.Html="{Binding Html}"
+                        behaviors:BrowserBehavior.PinToBottom="{Binding PinToBottom}"
+                        >
                 <WebBrowser.InputBindings>
                     <KeyBinding Command="{Binding FileOpenCommand}" Gesture="Ctrl+O" />
                 </WebBrowser.InputBindings>

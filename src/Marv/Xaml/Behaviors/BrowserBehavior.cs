@@ -16,16 +16,30 @@ namespace Marv.Xaml.Behaviors
     {
         public static readonly DependencyProperty HtmlProperty = DependencyProperty.RegisterAttached(
             "Html", typeof(string), typeof(BrowserBehavior), new FrameworkPropertyMetadata(OnHtmlChanged));
- 
+
         [AttachedPropertyBrowsableForType(typeof(WebBrowser))]
         public static string GetHtml(WebBrowser browser)
         {
             return (string)browser.GetValue(HtmlProperty);
         }
- 
+
         public static void SetHtml(WebBrowser browser, string value)
         {
             browser.SetValue(HtmlProperty, value);
+        }
+
+        public static readonly DependencyProperty PinToBottomProperty = DependencyProperty.RegisterAttached(
+            "PinToBottom", typeof(bool), typeof(BrowserBehavior), new FrameworkPropertyMetadata(OnPinToBottomChanged));
+
+        [AttachedPropertyBrowsableForType(typeof(WebBrowser))]
+        public static bool GetPinToBottom(WebBrowser browser)
+        {
+            return (bool)browser.GetValue(PinToBottomProperty);
+        }
+
+        public static void SetPinToBottom(WebBrowser browser, bool value)
+        {
+            browser.SetValue(PinToBottomProperty, value);
         }
  
         static void OnHtmlChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
@@ -40,6 +54,15 @@ namespace Marv.Xaml.Behaviors
                 SubscribeToNavigatedHandler(browser, pos);
                 
                 browser.NavigateToString(html);
+            }
+        }
+
+        private static void OnPinToBottomChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
+            var browser = dependencyObject as WebBrowser;
+            if (browser != null)
+            {
+                ScrollToBottom(browser);
             }
         }
 
@@ -64,14 +87,21 @@ namespace Marv.Xaml.Behaviors
 
         static readonly Dictionary<WebBrowser, LoadCompletedEventHandler> handlers = new Dictionary<WebBrowser, LoadCompletedEventHandler>();
 
-        private static LoadCompletedEventHandler BuildNavigatedHandler(string targetScrollPosition)
+        private static LoadCompletedEventHandler BuildNavigatedHandler(string originalScrollPosition)
         {
             return (sender, e) =>
                 {
                     var browser = sender as WebBrowser;
                     if (browser != null)
                     {
-                        SetVerticalScrollPosition(browser, targetScrollPosition);
+                        if (GetPinToBottom(browser))
+                        {
+                            ScrollToBottom(browser);
+                        }
+                        else
+                        {
+                            SetVerticalScrollPosition(browser, originalScrollPosition);
+                        }
                         UnsubscribeNavigatedHandler(browser);
                     }
                 };
@@ -94,6 +124,17 @@ namespace Marv.Xaml.Behaviors
             try
             {
                 browser.InvokeScript("setVerticalScrollPosition", scrollPosition ?? "0");
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private static void ScrollToBottom(WebBrowser browser)
+        {
+            try
+            {
+                browser.InvokeScript("scrollToBottom");
             }
             catch (Exception ex)
             {

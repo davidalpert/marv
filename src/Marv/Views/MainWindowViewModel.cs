@@ -20,6 +20,7 @@ namespace Marv
         public string Html { get; set; }
         public string RawHtml { get; set; }
         public bool ShowRawHtml { get; set; }
+        public bool PinToBottom { get; set; }
         public DateTime LastWriteTime { get; set; }
 
         public string PathToSource
@@ -137,6 +138,9 @@ return document.body.scrollTop.toString();
 function setVerticalScrollPosition(position) {
 document.body.scrollTop = position;
 }
+function scrollToBottom() {
+document.body.scrollTop = document.body.scrollHeight;
+}
 function getHorizontalScrollPosition() {
 return document.body.scrollLeft.toString();
 }
@@ -168,6 +172,7 @@ document.body.scrollLeft = position;
             settings.WindowState = _window.WindowState;
             settings.PathToLastSource = PathToSource;
             settings.ShowRawHtml = ShowRawHtml;
+            settings.PinToBottom = PinToBottom;
         }
 
         void ApplySettings(Settings settings)
@@ -210,6 +215,7 @@ document.body.scrollLeft = position;
             }
 
             ShowRawHtml = settings.ShowRawHtml;
+            PinToBottom = settings.PinToBottom;
             PathToSource = settings.PathToLastSource;
         }
     }

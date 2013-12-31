@@ -4,6 +4,12 @@ using System.Windows.Controls;
 
 namespace Marv.Xaml.Controls
 {
+    /// <summary>
+    /// Allows binding column definition visibilty to a viewmodel property.
+    /// </summary>
+    /// <remarks>
+    /// source: http://www.codeproject.com/Articles/437237/WPF-Grid-Column-and-Row-Hiding
+    /// </remarks>>
     public class CollapsableColumnDefinition : ColumnDefinition
     {
         // Variables
