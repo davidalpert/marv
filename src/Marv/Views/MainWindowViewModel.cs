@@ -118,8 +118,31 @@ namespace Marv
             var md = _fileSystem.File.ReadAllText(PathToSource);
             var html = _markdownConverter.Transform(md);
 
+            html = InjectScripts(html);
+
             Html = html;
             _dispatcherTimer.Start();
+        }
+
+        private string InjectScripts(string html)
+        {
+            return html + @"
+<script
+    type=""text/javascript"">
+function getVerticalScrollPosition() {
+return document.body.scrollTop.toString();
+}
+function setVerticalScrollPosition(position) {
+document.body.scrollTop = position;
+}
+function getHorizontalScrollPosition() {
+return document.body.scrollLeft.toString();
+}
+function setHorizontalScrollPosition(position) {
+document.body.scrollLeft = position;
+}
+</script>
+";
         }
 
         private DateTime GetLastWriteTime()

@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 
 namespace Marv.Xaml
 {
@@ -31,8 +35,71 @@ namespace Marv.Xaml
             if (browser != null)
             {
                 var html = e.NewValue as string ?? string.Empty;
+
+                var pos = GetVerticalScrollPosition(browser);
+
+                SubscribeToNavigatedHandler(browser, pos);
+                
                 browser.NavigateToString(html);
             }
         }
+
+        private static void SubscribeToNavigatedHandler(WebBrowser browser, string pos)
+        {
+            UnsubscribeNavigatedHandler(browser);
+
+            var callbackHandler = BuildNavigatedHandler(pos);
+            browser.LoadCompleted += callbackHandler;
+            handlers[browser] = callbackHandler;
+        }
+
+        private static void UnsubscribeNavigatedHandler(WebBrowser browser)
+        {
+            if (handlers.ContainsKey(browser))
+            {
+                var oldhandler = handlers[browser];
+                browser.LoadCompleted -= oldhandler;
+                handlers.Remove(browser);
+            }
+        }
+
+        static readonly Dictionary<WebBrowser, LoadCompletedEventHandler> handlers = new Dictionary<WebBrowser, LoadCompletedEventHandler>();
+
+        private static LoadCompletedEventHandler BuildNavigatedHandler(string targetScrollPosition)
+        {
+            return (sender, e) =>
+                {
+                    var browser = sender as WebBrowser;
+                    if (browser != null)
+                    {
+                        SetVerticalScrollPosition(browser, targetScrollPosition);
+                        UnsubscribeNavigatedHandler(browser);
+                    }
+                };
+        }
+
+        private static string GetVerticalScrollPosition(WebBrowser browser)
+        {
+            try
+            {
+                return (browser.InvokeScript("getVerticalScrollPosition") ?? "0").ToString();
+            }
+            catch (Exception ex)
+            {
+                return "0";
+            }
+        }
+
+        private static void SetVerticalScrollPosition(WebBrowser browser, string scrollPosition)
+        {
+            try
+            {
+                browser.InvokeScript("setVerticalScrollPosition", scrollPosition ?? "0");
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
     }
 }
