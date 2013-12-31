@@ -18,6 +18,7 @@ namespace Marv
     {
         public Size WindowSize { get; set; }
         public string Html { get; set; }
+        public string RawHtml { get; set; }
         public DateTime LastWriteTime { get; set; }
 
         public string PathToSource
@@ -118,9 +119,9 @@ namespace Marv
             var md = _fileSystem.File.ReadAllText(PathToSource);
             var html = _markdownConverter.Transform(md);
 
-            html = InjectScripts(html);
+            RawHtml = html;
+            Html = InjectScripts(html);
 
-            Html = html;
             _dispatcherTimer.Start();
         }
 

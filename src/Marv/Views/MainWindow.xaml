@@ -26,11 +26,26 @@
             <StatusBarItem HorizontalAlignment="Stretch" Content="{Binding PathToSource}"/>
         </StatusBar>
         
-        <WebBrowser Grid.Row="1" m:BrowserBehavior.Html="{Binding Html}" >
-            <WebBrowser.InputBindings>
-                <KeyBinding Command="{Binding FileOpenCommand}" Gesture="Ctrl+O" />
-            </WebBrowser.InputBindings>
-        </WebBrowser>
+        <Grid>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <ScrollViewer
+                Grid.Row="0" Grid.Column="0" 
+                >
+                <TextBlock Text="{Binding RawHtml}" />
+            </ScrollViewer>
+                
+            <WebBrowser Grid.Row="0" Grid.Column="1" m:BrowserBehavior.Html="{Binding Html}" >
+                <WebBrowser.InputBindings>
+                    <KeyBinding Command="{Binding FileOpenCommand}" Gesture="Ctrl+O" />
+                </WebBrowser.InputBindings>
+            </WebBrowser>
+            
+        </Grid>
     </DockPanel>
     
 </Window>
