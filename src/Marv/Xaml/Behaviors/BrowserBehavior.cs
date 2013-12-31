@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
-namespace Marv.Xaml
+namespace Marv.Xaml.Behaviors
 {
     /// <summary>
     /// Adds an Html property that can be set with a string of HTML text

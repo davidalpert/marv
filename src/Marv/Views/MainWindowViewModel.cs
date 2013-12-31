@@ -19,6 +19,7 @@ namespace Marv
         public Size WindowSize { get; set; }
         public string Html { get; set; }
         public string RawHtml { get; set; }
+        public bool ShowRawHtml { get; set; }
         public DateTime LastWriteTime { get; set; }
 
         public string PathToSource
@@ -166,6 +167,7 @@ document.body.scrollLeft = position;
             settings.WindowSize = WindowSize;
             settings.WindowState = _window.WindowState;
             settings.PathToLastSource = PathToSource;
+            settings.ShowRawHtml = ShowRawHtml;
         }
 
         void ApplySettings(Settings settings)
@@ -207,6 +209,7 @@ document.body.scrollLeft = position;
                 };
             }
 
+            ShowRawHtml = settings.ShowRawHtml;
             PathToSource = settings.PathToLastSource;
         }
     }

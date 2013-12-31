@@ -85,7 +85,10 @@
     <Compile Include="netfx\System\Guard.cs" />
     <Compile Include="netfx\System\Windows\Input\DelegateCommand.cs" />
     <Compile Include="StartupTasks\ShowMainWindow.cs" />
-    <Compile Include="Xaml\BrowserBehavior.cs" />
+    <Compile Include="Xaml\Behaviors\BrowserBehavior.cs" />
+    <Compile Include="Xaml\Controls\HidableColumnDefinition.cs" />
+    <Compile Include="Xaml\Converters\HidingBoolToVisibilityConverter.cs" />
+    <Compile Include="Xaml\Converters\InverseHidingBoolToVisibilityConverter.cs" />
     <Compile Include="Xaml\IConfigurableWindow.cs" />
     <Compile Include="Xaml\RelayCommand.cs" />
     <Page Include="Views\MainWindow.xaml">

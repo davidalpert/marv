@@ -70,5 +70,17 @@ namespace Marv.Properties {
                 this["PathToLastSource"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowRawHtml {
+            get {
+                return ((bool)(this["ShowRawHtml"]));
+            }
+            set {
+                this["ShowRawHtml"] = value;
+            }
+        }
     }
 }
