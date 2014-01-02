@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -22,6 +23,16 @@ namespace Marv
         public bool ShowRawHtml { get; set; }
         public bool PinToBottom { get; set; }
         public DateTime LastWriteTime { get; set; }
+
+        public Version ApplicationVersion
+        {
+            get
+            {
+                return Assembly.GetExecutingAssembly()
+                               .GetName()
+                               .Version;
+            }
+        }
 
         public string PathToSource
         {

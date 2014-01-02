@@ -32,8 +32,16 @@
         </Menu>
         
         <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem HorizontalAlignment="Left" Content="{Binding LastWriteTime}"/>
-            <Separator/>
+            <StatusBarItem Content="{Binding LastWriteTime}" DockPanel.Dock="Left"/>
+            <Separator DockPanel.Dock="Left"/>
+            
+            <StatusBarItem DockPanel.Dock="Right">
+               <TextBlock>
+                  v<TextBlock Text="{Binding ApplicationVersion}"/>
+               </TextBlock>
+            </StatusBarItem>
+            <Separator DockPanel.Dock="Right"/>
+            
             <StatusBarItem HorizontalAlignment="Stretch" Content="{Binding PathToSource}"/>
         </StatusBar>
         
