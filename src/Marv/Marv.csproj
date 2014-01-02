@@ -125,6 +125,7 @@
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Fody.targets" />
+    <None Include="Marv.nuspec" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -137,6 +138,7 @@
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="LICENSE.TXT" />
     <Content Include="welcome.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
