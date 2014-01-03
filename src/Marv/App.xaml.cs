@@ -4,6 +4,7 @@ using System.Windows;
 using Bootstrap;
 using Bootstrap.Extensions.StartupTasks;
 using Bootstrap.StructureMap;
+using Marv.StartupTasks;
 
 namespace Marv
 {
@@ -18,12 +19,18 @@ namespace Marv
 
             Bootstrapper.With
                         .StartupTasks()
-                        /*
                             .UsingThisExecutionOrder(s => s
-                                .First().TheRest()
+                                .First<InitializeLogging>()
+                                .Then().TheRest()
                                 .Then<ShowMainWindow>())
-                         */
                         .Start();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+
+            Bootstrapper.Reset();
         }
     }
 }

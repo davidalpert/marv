@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Common.Logging;
 using MarkdownSharp;
 using Marv.Properties;
 using Marv.Xaml;
@@ -53,22 +54,27 @@ namespace Marv
         public ICommand ExitCommand { get; set; }
 
         private string _pathToSource;
+        private readonly ILog _log;
         private IFileSystem _fileSystem;
         private Markdown _markdownConverter;
         private DispatcherTimer _dispatcherTimer;
         private IConfigurableWindow _window;
 
-        public MainWindowViewModel(IConfigurableWindow window, IFileSystem fileSystem)
+        public MainWindowViewModel(ILog log, IConfigurableWindow window, IFileSystem fileSystem)
         {
+            _log = log;
             _fileSystem = fileSystem;
             _markdownConverter = new Markdown();
             _window = window;
 
+            _log.Trace("initializing commands.");
             FileOpenCommand = new DelegateCommand(OpenFile);
             ExitCommand = new RelayCommand(CloseWindow);
 
+            _log.Trace("initializing file watching timer.");
             InitializeFileWatcher();
 
+            _log.Trace("applying settings");
             ApplySettings(Settings.Default);
             _window.SizeChanged += (sender, args) => WindowSize = args.NewSize;
             _window.Closing += (sender, args) => SaveSettings();
@@ -90,6 +96,7 @@ namespace Marv
             if (result == true)
             {
                 // Open document 
+                _log.Info(m => m("opening: {0}", dlg.FileName));
                 PathToSource = dlg.FileName;
             }
         }
@@ -99,6 +106,7 @@ namespace Marv
             var window = obj as Window;
             if (window != null)
             {
+                _log.Debug("Closing the main window.");
                 window.Close();
             }
         }
@@ -128,6 +136,8 @@ namespace Marv
             }
 
             LastWriteTime = GetLastWriteTime();
+
+            _log.Info(m => m("Source updated at {0}; re-rendering view.", LastWriteTime));
 
             var md = _fileSystem.File.ReadAllText(PathToSource);
             var html = _markdownConverter.Transform(md);

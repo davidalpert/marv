@@ -43,8 +43,18 @@
     <Reference Include="Bootstrapper.StructureMap">
       <HintPath>..\packages\Bootstrapper.StructureMap.2.0.3.9\lib\Net40\Bootstrapper.StructureMap.dll</HintPath>
     </Reference>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Common.Logging.2.1.2\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Log4Net1211">
+      <HintPath>..\packages\Common.Logging.Log4Net1211.2.1.2\lib\net40\Common.Logging.Log4Net1211.dll</HintPath>
+    </Reference>
     <Reference Include="CommonServiceLocator.StructureMapAdapter.Unofficial">
       <HintPath>..\packages\CommonServiceLocator.StructureMapAdapter.Unofficial.2.6.4.1\lib\Net40\CommonServiceLocator.StructureMapAdapter.Unofficial.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MarkdownSharp">
       <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
@@ -84,6 +94,7 @@
     </ApplicationDefinition>
     <Compile Include="netfx\System\Guard.cs" />
     <Compile Include="netfx\System\Windows\Input\DelegateCommand.cs" />
+    <Compile Include="StartupTasks\InitializeLogging.cs" />
     <Compile Include="StartupTasks\ShowMainWindow.cs" />
     <Compile Include="Xaml\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Xaml\Controls\HidableColumnDefinition.cs" />
